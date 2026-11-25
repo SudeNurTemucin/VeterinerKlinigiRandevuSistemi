@@ -27,12 +27,24 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <partial name="_GirisDurumu" />
                 </div>
             </div>
         </nav>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["Basari"] is string basari)
+            {
+
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+
+                    @basari
+
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+                </div>
+            }
             @RenderBody()
         </main>
     </div>

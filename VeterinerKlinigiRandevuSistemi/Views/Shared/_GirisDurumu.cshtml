@@ -1,0 +1,35 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Kullanici> GirisYoneticisi
+@inject UserManager<Kullanici> KullaniciYoneticisi
+
+<ul class="navbar-nav">
+    @if (GirisYoneticisi.IsSignedIn(User))
+    {
+        var kullanici = await KullaniciYoneticisi.GetUserAsync(User);
+        <li class="nav-item d-flex align-items-center me-2">
+            <span class="text-dark">Merhaba, @kullanici?.Ad</span>
+            @if (User.IsInRole(Roller.Admin))
+            {
+                <span class="badge bg-danger ms-2">Admin</span>
+            }
+            else if (User.IsInRole(Roller.Veteriner))
+            {
+                <span class="badge bg-info ms-2">Veteriner</span>
+            }
+        </li>
+        <li class="nav-item">
+            <form asp-controller="Hesap" asp-action="Cikis" method="post" class="d-inline">
+                <button type="submit" class="nav-link btn btn-link text-dark">Çıkış</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Hesap" asp-action="Kayit">Kayıt Ol</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Hesap" asp-action="Giris">Giriş Yap</a>
+        </li>
+    }
+</ul>
