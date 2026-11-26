@@ -1,0 +1,37 @@
+﻿@model Hizmet
+@{
+    ViewData["Title"] = Model.Ad;
+}
+
+<h1 class="h3 mb-3">@Model.Ad</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Klinik</dt>
+    <dd class="col-sm-9">
+        <a asp-controller="Klinik" asp-action="Detay" asp-route-id="@Model.KlinikId">@Model.Klinik?.Ad</a>
+    </dd>
+
+    <dt class="col-sm-3">Açıklama</dt>
+    <dd class="col-sm-9">@(Model.Aciklama ?? "-")</dd>
+
+    <dt class="col-sm-3">Süre</dt>
+    <dd class="col-sm-9">@Model.SureDakika dakika</dd>
+
+    <dt class="col-sm-3">Ücret</dt>
+    <dd class="col-sm-9">@Model.Ucret.ToString("C")</dd>
+</dl>
+
+<h2 class="h5">Bu hizmeti veren veterinerler (@Model.Veterinerler.Count)</h2>
+<ul class="list-group mb-3">
+    @foreach (var veteriner in Model.Veterinerler.OrderBy(v => v.Ad))
+    {
+        <li class="list-group-item">@veteriner.TamAd</li>
+    }
+    @if (!Model.Veterinerler.Any())
+    {
+        <li class="list-group-item text-muted">Henüz atanmış veteriner yok (Adım 5'te eklenecek).</li>
+    }
+</ul>
+
+<a asp-action="Duzenle" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
+<a asp-action="Index" class="btn btn-link">Listeye dön</a>

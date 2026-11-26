@@ -24,6 +24,8 @@ public class Hizmet
     [Display(Name = "Ücret")]
     public decimal Ucret { get; set; }
 
+    //Açılır listede seçim yapılmazsa Türkçe mesaj gösterir.
+    [Required(ErrorMessage = "Lütfen bir klinik seçiniz.")]
     [Display(Name = "Klinik")]
     public int KlinikId { get; set; }
     public Klinik? Klinik { get; set; }

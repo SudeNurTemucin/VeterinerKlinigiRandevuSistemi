@@ -49,4 +49,6 @@
 </div>
 
 <a asp-action="Duzenle" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
+<a asp-controller="Hizmet" asp-action="Index" asp-route-klinikId="@Model.Id" class="btn btn-outline-success">Hizmetleri yönet</a>
+<a asp-controller="Hizmet" asp-action="Ekle" asp-route-klinikId="@Model.Id" class="btn btn-outline-success">+ Bu kliniğe hizmet ekle</a>
 <a asp-action="Index" class="btn btn-link">Listeye dön</a>

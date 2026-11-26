@@ -1,18 +1,26 @@
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 using VeterinerKlinigiRandevuSistemi.Data;
 using Microsoft.AspNetCore.Identity;
 using VeterinerKlinigiRandevuSistemi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    var mesajlar = options.ModelBindingMessageProvider;
+    mesajlar.SetValueMustBeANumberAccessor(alan => $"{alan} alanına geçerli bir sayı giriniz.");
+    mesajlar.SetValueMustNotBeNullAccessor(_ => "Bu alan zorunludur.");
+    mesajlar.SetAttemptedValueIsInvalidAccessor((deger, alan) => $"'{deger}' değeri {alan} alanı için geçersiz.");
+    mesajlar.SetValueIsInvalidAccessor(deger => $"'{deger}' değeri geçersiz.");
+});
 
 builder.Services.AddDbContext<UygulamaDbContext>(options =>
 options.UseSqlite(builder.Configuration.GetConnectionString("VarsayilanBaglanti")));
 
 builder.Services.AddIdentity<Kullanici, IdentityRole>(options =>
 {
-    // Admin şifresi "sau" olduğu için varsayılan şifre kurallarını esnetilir.
+    //Varsayılan şifre kuralları esnetilir.
     options.Password.RequiredLength = 3;
     options.Password.RequireDigit = false;
     options.Password.RequireLowercase = false;
@@ -41,15 +49,23 @@ using (var scope = app.Services.CreateScope())
     await BaslangicVerisi.YukleAsync(scope.ServiceProvider);
 }
 
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
+
+var turkce = new CultureInfo("tr-TR");
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(turkce),
+    SupportedCultures = new List<CultureInfo> { turkce },
+    SupportedUICultures = new List<CultureInfo> { turkce }
+});
+
+
 app.UseRouting();
 
 app.UseAuthentication(); //Kullanıcının kimliğini doğrular, yani giriş yapmış mı kontrol eder.
