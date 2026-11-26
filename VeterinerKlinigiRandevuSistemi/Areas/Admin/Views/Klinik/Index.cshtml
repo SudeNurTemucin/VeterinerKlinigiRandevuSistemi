@@ -1,0 +1,48 @@
+﻿@model List<Klinik>
+@{
+    ViewData["Title"] = "Klinikler";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Klinikler</h1>
+    <a asp-action="Ekle" class="btn btn-primary">+ Yeni Klinik</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Henüz klinik eklenmemiş.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Klinik Adı</th>
+                <th>Telefon</th>
+                <th>Çalışma Saatleri</th>
+                <th>Hizmet</th>
+                <th>Veteriner</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var klinik in Model)
+            {
+                <tr>
+                    <td>@klinik.Ad</td>
+                    <td>@klinik.Telefon</td>
+                    <td>@klinik.AcilisSaati.ToString("HH:mm") - @klinik.KapanisSaati.ToString("HH:mm")</td>
+                    <td>@klinik.Hizmetler.Count</td>
+                    <td>@klinik.Veterinerler.Count</td>
+                    <td class="text-end">
+                        <a asp-action="Detay" asp-route-id="@klinik.Id" class="btn btn-sm btn-outline-secondary">Detay</a>
+                        <a asp-action="Duzenle" asp-route-id="@klinik.Id" class="btn btn-sm btn-outline-primary">Düzenle</a>
+                        <a asp-action="Sil" asp-route-id="@klinik.Id" class="btn btn-sm btn-outline-danger">Sil</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-controller="Panel" asp-action="Index">&larr; Panele dön</a>

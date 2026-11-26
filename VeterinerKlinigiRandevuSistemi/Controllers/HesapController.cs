@@ -26,7 +26,7 @@ public class HesapController : Controller
     }
 
     [HttpPost]
-    [ValidateAntiForgeryToken]
+    [ValidateAntiForgeryToken]      //CSRF koruması
     public async Task<IActionResult> Giris(GirisViewModel model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
@@ -99,7 +99,7 @@ public class HesapController : Controller
     public async Task<IActionResult> Cikis()
     {
         await _girisYoneticisi.SignOutAsync();
-        return RedirectToAction("Index", "Home");
+        return RedirectToAction("Index", "Home"); //PRG deseni
     }
 
     [HttpGet]

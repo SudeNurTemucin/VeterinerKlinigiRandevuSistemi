@@ -15,10 +15,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Areas\Admin\Controllers\" />
-    <Folder Include="Areas\Admin\Views\Klinik\" />
-    <Folder Include="Areas\Admin\Views\Panel\" />
-  </ItemGroup>
-
 </Project>

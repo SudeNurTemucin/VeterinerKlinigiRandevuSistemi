@@ -1,0 +1,20 @@
+﻿@model Klinik
+@{
+    ViewData["Title"] = "Yeni Klinik";
+}
+
+<h1 class="h3 mb-4">Yeni Klinik</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form asp-action="Ekle" method="post">
+            <partial name="_KlinikForm" model="Model" />
+            <button type="submit" class="btn btn-primary">Kaydet</button>
+            <a asp-action="Index" class="btn btn-link">Vazgeç</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

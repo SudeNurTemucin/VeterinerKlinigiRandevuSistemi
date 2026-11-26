@@ -2,7 +2,7 @@
 
 namespace VeterinerKlinigiRandevuSistemi.Models;
 
-public class Klinik
+public class Klinik : IValidatableObject
 {
     public int Id { get; set; }
 
@@ -29,4 +29,15 @@ public class Klinik
 
     public ICollection<Hizmet> Hizmetler { get; set; } = new List<Hizmet>();
     public ICollection<Veteriner> Veterinerler { get; set; } = new List<Veteriner>();
+
+    // İki alanı karşılaştıran iş kuralı,sadece sunucu tarafında çalışır.
+    public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+    {
+        if (KapanisSaati <= AcilisSaati)
+        {
+            yield return new ValidationResult(
+                "Kapanış saati açılış saatinden sonra olmalıdır.",
+                new[] { nameof(KapanisSaati) });
+        }
+    }
 }

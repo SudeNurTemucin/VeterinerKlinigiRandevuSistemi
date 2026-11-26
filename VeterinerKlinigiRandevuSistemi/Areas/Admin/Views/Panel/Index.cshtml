@@ -1,0 +1,47 @@
+﻿@model PanelOzetViewModel
+@{
+    ViewData["Title"] = "Admin Paneli";
+}
+
+<h1 class="h3 mb-4">Admin Paneli</h1>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card text-bg-primary h-100">
+            <div class="card-body">
+                <div class="display-6">@Model.KlinikSayisi</div>
+                <div>Klinik</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card text-bg-success h-100">
+            <div class="card-body">
+                <div class="display-6">@Model.HizmetSayisi</div>
+                <div>Hizmet</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card text-bg-info h-100">
+            <div class="card-body">
+                <div class="display-6">@Model.VeterinerSayisi</div>
+                <div>Veteriner</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card text-bg-warning h-100">
+            <div class="card-body">
+                <div class="display-6">@Model.BekleyenRandevuSayisi</div>
+                <div>Bekleyen Randevu</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="list-group">
+    <a class="list-group-item list-group-item-action" asp-controller="Klinik" asp-action="Index">Klinik Yönetimi</a>
+    <a class="list-group-item list-group-item-action disabled">Hizmet Yönetimi</a>
+    <a class="list-group-item list-group-item-action disabled">Veteriner Yönetimi</a>
+</div>

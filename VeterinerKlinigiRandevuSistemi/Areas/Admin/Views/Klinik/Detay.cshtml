@@ -1,0 +1,52 @@
+﻿@model Klinik
+@{
+    ViewData["Title"] = Model.Ad;
+}
+
+<h1 class="h3 mb-3">@Model.Ad</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Adres</dt>
+    <dd class="col-sm-9">@Model.Adres</dd>
+
+    <dt class="col-sm-3">Telefon</dt>
+    <dd class="col-sm-9">@(Model.Telefon ?? "-")</dd>
+
+    <dt class="col-sm-3">Çalışma Saatleri</dt>
+    <dd class="col-sm-9">@Model.AcilisSaati.ToString("HH:mm") - @Model.KapanisSaati.ToString("HH:mm")</dd>
+</dl>
+
+<div class="row">
+    <div class="col-md-6">
+        <h2 class="h5">Hizmetler (@Model.Hizmetler.Count)</h2>
+        <ul class="list-group mb-3">
+            @foreach (var hizmet in Model.Hizmetler.OrderBy(h => h.Ad))
+            {
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>@hizmet.Ad (@hizmet.SureDakika dk)</span>
+                    <span>@hizmet.Ucret.ToString("C")</span>
+                </li>
+            }
+            @if (!Model.Hizmetler.Any())
+            {
+                <li class="list-group-item text-muted">Hizmet yok.</li>
+            }
+        </ul>
+    </div>
+    <div class="col-md-6">
+        <h2 class="h5">Veterinerler (@Model.Veterinerler.Count)</h2>
+        <ul class="list-group mb-3">
+            @foreach (var veteriner in Model.Veterinerler.OrderBy(v => v.Ad))
+            {
+                <li class="list-group-item">@veteriner.TamAd</li>
+            }
+            @if (!Model.Veterinerler.Any())
+            {
+                <li class="list-group-item text-muted">Veteriner yok.</li>
+            }
+        </ul>
+    </div>
+</div>
+
+<a asp-action="Duzenle" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
+<a asp-action="Index" class="btn btn-link">Listeye dön</a>

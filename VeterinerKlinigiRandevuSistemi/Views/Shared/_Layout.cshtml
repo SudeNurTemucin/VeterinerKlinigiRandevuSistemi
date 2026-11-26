@@ -26,6 +26,15 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+
+                        @*Sadece Admin rolüne sahip kullanıcılar için Admin Paneli linkini göster *@
+                        @if (User.IsInRole(Roller.Admin))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-danger fw-semibold" asp-area="Admin" asp-controller="Panel" asp-action="Index">Admin Paneli</a>
+                            </li>
+                        }
+
                     </ul>
                     <partial name="_GirisDurumu" />
                 </div>
@@ -45,9 +54,19 @@
 
                 </div>
             }
+
+            @*Hata mesajını göster.*@
+            @if (TempData["Hata"] is string hata)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    @hata
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
             @RenderBody()
         </main>
-    </div>
+    </div> 
 
     <footer class="border-top footer text-muted">
         <div class="container">
