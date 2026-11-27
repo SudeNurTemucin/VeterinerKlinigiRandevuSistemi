@@ -1,0 +1,56 @@
+@model EvcilHayvanFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Ad" class="form-label"></label>
+        <input asp-for="Ad" class="form-control" />
+        <span asp-validation-for="Ad" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Tur" class="form-label"></label>
+        <select asp-for="Tur" asp-items="@(new SelectList(EvcilHayvanFormViewModel.Turler))" class="form-select">
+            <option value="">-- Tür seçiniz --</option>
+        </select>
+        <span asp-validation-for="Tur" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Irk" class="form-label"></label>
+    <input asp-for="Irk" class="form-control" placeholder="Örn. Tekir, Golden Retriever (bilmiyorsanız boş bırakın)" />
+    <span asp-validation-for="Irk" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="DogumTarihi" class="form-label"></label>
+        <input asp-for="DogumTarihi" type="date" class="form-control" />
+        <span asp-validation-for="DogumTarihi" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Kilo" class="form-label"></label>
+        <input asp-for="Kilo" class="form-control" />
+        <div class="form-text">Ondalık için virgül kullanın: 4,5</div>
+        <span asp-validation-for="Kilo" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Fotograf" class="form-label"></label>
+    @if (Model.MevcutFotografYolu is not null)
+    {
+        <div class="mb-2">
+            <img src="@Model.MevcutFotografYolu" alt="Mevcut fotoğraf" class="rounded" style="max-height: 120px;" />
+        </div>
+        <div class="form-check mb-2">
+            <input asp-for="FotografiKaldir" class="form-check-input" />
+            <label asp-for="FotografiKaldir" class="form-check-label"></label>
+        </div>
+    }
+    <input asp-for="Fotograf" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+    <div class="form-text">İsteğe bağlı. JPG, PNG veya WEBP, en fazla 2 MB.</div>
+    <span asp-validation-for="Fotograf" class="text-danger"></span>
+    <img id="onizleme" alt="Önizleme" class="rounded mt-2 d-none" style="max-height: 120px;" />
+</div>

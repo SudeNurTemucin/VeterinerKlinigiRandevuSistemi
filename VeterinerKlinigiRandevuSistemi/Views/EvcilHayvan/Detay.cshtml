@@ -1,0 +1,45 @@
+@using VeterinerKlinigiRandevuSistemi.Yardimcilar
+@model EvcilHayvan
+@{
+    ViewData["Title"] = Model.Ad;
+}
+
+<div class="row g-4">
+    <div class="col-md-4">
+        @if (Model.FotografYolu is not null)
+        {
+            <img src="@Model.FotografYolu" alt="@Model.Ad" class="img-fluid rounded" />
+        }
+        else
+        {
+            <div class="bg-light rounded d-flex align-items-center justify-content-center text-muted" style="height: 220px;">
+                Fotoğraf yok
+            </div>
+        }
+    </div>
+    <div class="col-md-8">
+        <h1 class="h3 mb-3">@Model.Ad</h1>
+        <dl class="row">
+            <dt class="col-sm-4">Tür</dt>
+            <dd class="col-sm-8">@Model.Tur</dd>
+
+            <dt class="col-sm-4">Irk</dt>
+            <dd class="col-sm-8">@(Model.Irk ?? "-")</dd>
+
+            <dt class="col-sm-4">Doğum Tarihi</dt>
+            <dd class="col-sm-8">@Model.DogumTarihi.ToString("d MMMM yyyy") (@YasYardimcisi.YasMetni(Model.DogumTarihi))</dd>
+
+            <dt class="col-sm-4">Kilo</dt>
+            <dd class="col-sm-8">@Model.Kilo.ToString("0.##") kg</dd>
+        </dl>
+
+        <a asp-action="Duzenle" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
+        <a asp-action="Sil" asp-route-id="@Model.Id" class="btn btn-outline-danger">Sil</a>
+        <a asp-action="Index" class="btn btn-link">Listeye dön</a>
+    </div>
+</div>
+
+<hr class="my-4" />
+
+<h2 class="h5">Aşı Kayıtları</h2>
+<p class="text-muted">Adım 7'de eklenecek.</p>

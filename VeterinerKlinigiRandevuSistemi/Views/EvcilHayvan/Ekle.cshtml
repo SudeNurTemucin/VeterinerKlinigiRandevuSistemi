@@ -1,0 +1,21 @@
+@model EvcilHayvanFormViewModel
+@{
+    ViewData["Title"] = "Yeni Evcil Hayvan";
+}
+
+<h1 class="h3 mb-4">Yeni Evcil Hayvan</h1>
+<div class="row">
+    <div class="col-lg-7">
+        @* enctype: dosya yüklemek için şart, yoksa fotoğraf sunucuya hiç gelmez *@
+        <form asp-action="Ekle" method="post" enctype="multipart/form-data">
+            <partial name="_EvcilHayvanForm" model="Model" />
+            <button type="submit" class="btn btn-success">Kaydet</button>
+            <a asp-action="Index" class="btn btn-link">Vazgeç</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    @*@<script src="~/js/fotograf-onizleme.js" asp-append-version="true"></script>*@
+}

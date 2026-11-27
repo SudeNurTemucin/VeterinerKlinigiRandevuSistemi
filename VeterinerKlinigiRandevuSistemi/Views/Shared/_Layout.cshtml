@@ -1,5 +1,5 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -27,7 +27,15 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
 
-                        @*Sadece Admin rolüne sahip kullanıcılar için Admin Paneli linkini göster *@
+                        @* Adım 6: Üyeler kendi hayvanlarını görür *@
+                        @if (User.IsInRole(Roller.Uye))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="EvcilHayvan" asp-action="Index">Evcil Hayvanlarım</a>
+                            </li>
+                        }
+
+                        @* Sadece Admin rolüne sahip kullanıcılar için Admin Paneli linkini göster *@
                         @if (User.IsInRole(Roller.Admin))
                         {
                             <li class="nav-item">
@@ -43,19 +51,16 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @* Başarı mesajını göster *@
             @if (TempData["Basari"] is string basari)
             {
-
                 <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-
                     @basari
-
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-
                 </div>
             }
 
-            @*Hata mesajını göster.*@
+            @* Hata mesajını göster *@
             @if (TempData["Hata"] is string hata)
             {
                 <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
@@ -66,7 +71,7 @@
 
             @RenderBody()
         </main>
-    </div> 
+    </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">

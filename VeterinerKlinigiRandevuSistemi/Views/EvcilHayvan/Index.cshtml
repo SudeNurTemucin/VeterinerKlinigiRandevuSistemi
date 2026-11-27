@@ -1,0 +1,48 @@
+@using VeterinerKlinigiRandevuSistemi.Yardimcilar
+@model List<EvcilHayvan>
+@{
+    ViewData["Title"] = "Evcil Hayvanlarım";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Evcil Hayvanlarım</h1>
+    <a asp-action="Ekle" class="btn btn-success">+ Yeni Hayvan</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Henüz evcil hayvan eklemediniz. Randevu alabilmek için önce dostunuzu ekleyin.
+    </div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var hayvan in Model)
+        {
+            <div class="col-sm-6 col-lg-4">
+                <div class="card h-100">
+                    @if (hayvan.FotografYolu is not null)
+                    {
+                        <img src="@hayvan.FotografYolu" class="card-img-top" alt="@hayvan.Ad" style="height: 200px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center text-muted" style="height: 200px;">
+                            Fotoğraf yok
+                        </div>
+                    }
+                    <div class="card-body">
+                        <h2 class="h5 card-title">@hayvan.Ad</h2>
+                        <p class="card-text mb-1">@(hayvan.Irk is null ? hayvan.Tur : $"{hayvan.Tur} · {hayvan.Irk}")</p>
+                        <p class="card-text text-muted small">@YasYardimcisi.YasMetni(hayvan.DogumTarihi) · @hayvan.Kilo.ToString("0.##") kg</p>
+                    </div>
+                    <div class="card-footer bg-white border-0 pb-3">
+                        <a asp-action="Detay" asp-route-id="@hayvan.Id" class="btn btn-sm btn-outline-secondary">Detay</a>
+                        <a asp-action="Duzenle" asp-route-id="@hayvan.Id" class="btn btn-sm btn-outline-primary">Düzenle</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
