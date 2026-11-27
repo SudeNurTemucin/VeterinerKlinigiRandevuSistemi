@@ -1,0 +1,53 @@
+@model List<AsiTakvimiOgesi>
+@{
+    ViewData["Title"] = "Aşı Takvimi";
+}
+
+<h1 class="h3 mb-1">Aşı Takvimi</h1>
+<p class="text-muted mb-4">Gecikmiş dozlar ve önümüzdeki 60 gün içinde yapılması gereken aşılar.</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-success">Yaklaşan veya gecikmiş aşı yok. 🎉</div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Hayvan</th>
+                <th>Aşı</th>
+                <th>Son Yapılma</th>
+                <th>Sonraki Doz</th>
+                <th>Durum</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var oge in Model)
+            {
+                <tr class="@(oge.KalanGun < 0 ? "table-danger" : oge.KalanGun <= 7 ? "table-warning" : "")">
+                    <td><a asp-controller="EvcilHayvan" asp-action="Detay" asp-route-id="@oge.EvcilHayvanId">@oge.HayvanAdi</a></td>
+                    <td>@oge.AsiAdi</td>
+                    <td>@oge.SonYapilma.ToString("dd.MM.yyyy")</td>
+                    <td>@oge.SonrakiDoz.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        @if (oge.KalanGun < 0)
+                        {
+                            <span class="badge text-bg-danger">@(-oge.KalanGun) gün gecikti</span>
+                        }
+                        else if (oge.KalanGun == 0)
+                        {
+                            <span class="badge text-bg-warning">Bugün</span>
+                        }
+                        else
+                        {
+                            <span class="badge @(oge.KalanGun <= 7 ? "text-bg-warning" : "text-bg-secondary")">@oge.KalanGun gün kaldı</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-controller="EvcilHayvan" asp-action="Index">&larr; Evcil Hayvanlarım</a>

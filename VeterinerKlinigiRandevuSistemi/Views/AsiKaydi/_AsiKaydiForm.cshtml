@@ -1,0 +1,43 @@
+@model AsiKaydiFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+@* Gizli alan: hangi hayvana ait olduğu. Sunucu bunu yine de sahiplik açısından kontrol eder. *@
+<input type="hidden" asp-for="EvcilHayvanId" />
+
+<div class="mb-3">
+    <label asp-for="AsiAdi" class="form-label"></label>
+    <input asp-for="AsiAdi" class="form-control" list="yaygin-asilar" autocomplete="off" />
+    <datalist id="yaygin-asilar">
+        @foreach (var asi in AsiKaydiFormViewModel.YayginAsilar)
+        {
+            <option value="@asi"></option>
+        }
+    </datalist>
+    <span asp-validation-for="AsiAdi" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="YapilmaTarihi" class="form-label"></label>
+        <input asp-for="YapilmaTarihi" type="date" class="form-control" />
+        <span asp-validation-for="YapilmaTarihi" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="SonrakiDozTarihi" class="form-label"></label>
+        <input asp-for="SonrakiDozTarihi" type="date" class="form-control" />
+        <div class="mt-1">
+            @* jQuery: tıklanınca yapıldığı tarihe 1 ay / 1 yıl ekler *@
+            <button type="button" class="btn btn-sm btn-outline-secondary doz-ekle" data-ay="1">+1 ay</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary doz-ekle" data-ay="3">+3 ay</button>
+            <button type="button" class="btn btn-sm btn-outline-secondary doz-ekle" data-ay="12">+1 yıl</button>
+        </div>
+        <span asp-validation-for="SonrakiDozTarihi" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Notlar" class="form-label"></label>
+    <textarea asp-for="Notlar" class="form-control" rows="2"></textarea>
+    <span asp-validation-for="Notlar" class="text-danger"></span>
+</div>

@@ -9,33 +9,30 @@ using VeterinerKlinigiRandevuSistemi.Yardimcilar;
 
 namespace VeterinerKlinigiRandevuSistemi.Controllers;
 
-// IDOR KORUMASI: Bu controller'daki HER sorgu KullanicininHayvanlari() üzerinden başlar.
+//Idor Koruması: Bu controller'daki her sorgu KullanicininHayvanlari() üzerinden başlar.
+// O metot "sadece giriş yapan kullanıcının hayvanları" filtresini ekler.
 [Authorize(Roles = Roller.Uye)]
 public class EvcilHayvanController : Controller
 {
     private const long MaksimumFotografBoyutu = 2 * 1024 * 1024; // 2 MB
     private static readonly string[] IzinVerilenUzantilar = { ".jpg", ".jpeg", ".png", ".webp" };
-
-    // Fotoğraflar proje klasörünün DIŞINDA tutulur (bkz. Yardimcilar/YuklemeAyarlari.cs).
-    // Tarayıcıya Program.cs'teki UseStaticFiles ile "/yuklemeler/hayvanlar/..." adresinden sunulur.
-    private const string FotografUrlOnEki = YuklemeAyarlari.UrlOnEki + "/hayvanlar";
+    private const string FotografUrlOnEki = YuklemeAyarlari.UrlOnEki + "/hayvanlar"; // "/yuklemeler/hayvanlar"
 
     private readonly UygulamaDbContext _db;
     private readonly UserManager<Kullanici> _kullaniciYoneticisi;
+
     public EvcilHayvanController(UygulamaDbContext db, UserManager<Kullanici> kullaniciYoneticisi)
     {
         _db = db;
         _kullaniciYoneticisi = kullaniciYoneticisi;
     }
 
-    // Giriş yapan kullanıcının Id'si (cookie'deki claim'den okunur, veritabanına gitmez)
     private string KullaniciId => _kullaniciYoneticisi.GetUserId(User)!;
 
     // IDOR korumasının kalbi: bütün sorgular buradan başlar.
     private IQueryable<EvcilHayvan> KullanicininHayvanlari() =>
         _db.EvcilHayvanlar.Where(h => h.SahipId == KullaniciId);
 
-    // GET: /EvcilHayvan
     public async Task<IActionResult> Index()
     {
         var hayvanlar = await KullanicininHayvanlari()
@@ -46,15 +43,15 @@ public class EvcilHayvanController : Controller
         return View(hayvanlar);
     }
 
-    // GET: /EvcilHayvan/Detay/5
     public async Task<IActionResult> Detay(int id)
     {
         var hayvan = await KullanicininHayvanlari()
             .AsNoTracking()
+            .Include(h => h.AsiKayitlari)          
             .FirstOrDefaultAsync(h => h.Id == id);
 
-        // Hayvan yoksa VEYA başkasınınsa ikisi de NotFound (404) döner.
-        // 403 dönseydik "bu Id'de bir hayvan var ama senin değil" bilgisini sızdırırdık.
+        // Hayvan yoksa veya başkasınınsa ikisi de NotFound (404) döner.
+        // 403 dönsey "bu Id'de bir hayvan var ama senin değil" bilgisini sızdırır.
         if (hayvan is null)
         {
             return NotFound();
@@ -62,13 +59,12 @@ public class EvcilHayvanController : Controller
         return View(hayvan);
     }
 
-    // GET: /EvcilHayvan/Ekle
+    
     public IActionResult Ekle()
     {
         return View(new EvcilHayvanFormViewModel());
     }
 
-    // POST: /EvcilHayvan/Ekle
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Ekle(EvcilHayvanFormViewModel model)
@@ -86,7 +82,7 @@ public class EvcilHayvanController : Controller
             Irk = model.Irk?.Trim(),
             DogumTarihi = model.DogumTarihi,
             Kilo = model.Kilo,
-            SahipId = KullaniciId   // Sahip formdan DEĞİL, oturumdan gelir
+            SahipId = KullaniciId   //Sahip formdan değil, oturumdan gelir
         };
 
         if (model.Fotograf is not null)
@@ -100,7 +96,6 @@ public class EvcilHayvanController : Controller
         TempData["Basari"] = $"{hayvan.Ad} eklendi.";
         return RedirectToAction(nameof(Index));
     }
-
     public async Task<IActionResult> Duzenle(int id)
     {
         var hayvan = await KullanicininHayvanlari()
@@ -134,8 +129,8 @@ public class EvcilHayvanController : Controller
             return BadRequest();
         }
 
-        // POST'ta da sahiplik kontrolü şart! (GET'teki kontrol tek başına yetmez,
-        // çünkü form Postman gibi bir araçla doğrudan da gönderilebilir.)
+        // POST'ta da sahiplik kontrolü şart! get'teki kontrol tek başına yetmez,
+        // çünkü form Postman gibi bir araçla doğrudan da gönderilebilir.
         var hayvan = await KullanicininHayvanlari().FirstOrDefaultAsync(h => h.Id == id);
         if (hayvan is null)
         {
@@ -154,7 +149,7 @@ public class EvcilHayvanController : Controller
         hayvan.Irk = model.Irk?.Trim();
         hayvan.DogumTarihi = model.DogumTarihi;
         hayvan.Kilo = model.Kilo;
-        
+
         if (model.Fotograf is not null)
         {
             FotografiSil(hayvan.FotografYolu);
@@ -171,8 +166,6 @@ public class EvcilHayvanController : Controller
         TempData["Basari"] = $"{hayvan.Ad} güncellendi.";
         return RedirectToAction(nameof(Detay), new { id });
     }
-
-
     public async Task<IActionResult> Sil(int id)
     {
         var hayvan = await KullanicininHayvanlari()
@@ -186,7 +179,6 @@ public class EvcilHayvanController : Controller
         return View(hayvan);
     }
 
-  
     [HttpPost, ActionName("Sil")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SilOnaylandi(int id)
@@ -197,7 +189,7 @@ public class EvcilHayvanController : Controller
             return NotFound();
         }
 
-        // Randevu geçmişi olan hayvan silinmez (veteriner kayıtları korunur)
+        // Randevu geçmişi olan hayvan silinmez.
         if (await _db.Randevular.AnyAsync(r => r.EvcilHayvanId == id))
         {
             TempData["Hata"] = $"{hayvan.Ad} için randevu kaydı olduğu için silinemez.";
@@ -205,7 +197,7 @@ public class EvcilHayvanController : Controller
         }
 
         var fotografYolu = hayvan.FotografYolu;
-        _db.EvcilHayvanlar.Remove(hayvan);   // Aşı kayıtları Cascade ile silinir
+        _db.EvcilHayvanlar.Remove(hayvan);   //Aşı kayıtları Cascade ile silinir
         await _db.SaveChangesAsync();
         FotografiSil(fotografYolu);
 
@@ -213,13 +205,11 @@ public class EvcilHayvanController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    //FOTOĞRAF YARDIMCILARI
-
     private void FotografiDogrula(IFormFile? dosya)
     {
         if (dosya is null || dosya.Length == 0)
         {
-            return; // Fotoğraf isteğe bağlı
+            return;
         }
 
         var uzanti = Path.GetExtension(dosya.FileName).ToLowerInvariant();
@@ -235,12 +225,14 @@ public class EvcilHayvanController : Controller
         }
     }
 
-    // Fotoğrafların diskteki klasörü: ...\AppData\Local\VeterinerKlinigiRandevuSistemi\Yuklemeler\hayvanlar
+    // Fotoğraflar proje klasörünün DIŞINDA: ...\AppData\Local\VeterinerKlinigiRandevuSistemi\Yuklemeler\hayvanlar
+    // (F5 ile hata ayıklarken VS, proje klasörüne yazılan yeni dosyada uygulamayı kapatıyordu.)
     private static string FotografKlasoru => Path.Combine(YuklemeAyarlari.Klasor, "hayvanlar");
+
     private async Task<string> FotografiKaydetAsync(IFormFile dosya)
     {
         var klasor = FotografKlasoru;
-        Directory.CreateDirectory(klasor); // Yoksa oluşturur, varsa bir şey yapmaz
+        Directory.CreateDirectory(klasor); 
 
         var uzanti = Path.GetExtension(dosya.FileName).ToLowerInvariant();
         var dosyaAdi = $"{Guid.NewGuid()}{uzanti}";

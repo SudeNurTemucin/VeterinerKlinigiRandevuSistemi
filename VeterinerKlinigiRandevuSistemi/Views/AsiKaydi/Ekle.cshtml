@@ -1,0 +1,21 @@
+@model AsiKaydiFormViewModel
+@{
+    ViewData["Title"] = "Aşı Ekle: " + Model.HayvanAdi;
+}
+
+<h1 class="h3 mb-4">@Model.HayvanAdi - Aşı Ekle</h1>
+
+<div class="row">
+    <div class="col-lg-7">
+        <form asp-action="Ekle" method="post">
+            <partial name="_AsiKaydiForm" model="Model" />
+            <button type="submit" class="btn btn-success">Kaydet</button>
+            <a asp-controller="EvcilHayvan" asp-action="Detay" asp-route-id="@Model.EvcilHayvanId" class="btn btn-link">Vazgeç</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/asi-formu.js" asp-append-version="true"></script>
+}

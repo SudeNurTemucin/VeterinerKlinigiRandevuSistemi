@@ -6,7 +6,10 @@
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h3 mb-0">Evcil Hayvanlarım</h1>
-    <a asp-action="Ekle" class="btn btn-success">+ Yeni Hayvan</a>
+    <div>
+        <a asp-controller="AsiKaydi" asp-action="Index" class="btn btn-outline-primary">Aşı Takvimi</a>
+        <a asp-action="Ekle" class="btn btn-success">+ Yeni Hayvan</a>
+    </div>
 </div>
 
 @if (!Model.Any())

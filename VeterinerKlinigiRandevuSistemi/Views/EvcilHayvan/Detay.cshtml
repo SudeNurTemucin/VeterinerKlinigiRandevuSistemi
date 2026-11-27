@@ -41,5 +41,65 @@
 
 <hr class="my-4" />
 
-<h2 class="h5">Aşı Kayıtları</h2>
-<p class="text-muted">Adım 7'de eklenecek.</p>
+<div class="d-flex justify-content-between align-items-center mb-2">
+    <h2 class="h5 mb-0">Aşı Kayıtları (@Model.AsiKayitlari.Count)</h2>
+    <a asp-controller="AsiKaydi" asp-action="Ekle" asp-route-evcilHayvanId="@Model.Id" class="btn btn-sm btn-success">+ Aşı Ekle</a>
+</div>
+
+@if (!Model.AsiKayitlari.Any())
+{
+    <p class="text-muted">Henüz aşı kaydı yok.</p>
+}
+else
+{
+    var bugun = DateOnly.FromDateTime(DateTime.Today);
+    <table class="table table-sm align-middle">
+        <thead>
+            <tr>
+                <th>Aşı</th>
+                <th>Yapıldığı Tarih</th>
+                <th>Sonraki Doz</th>
+                <th>Not</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var asi in Model.AsiKayitlari.OrderByDescending(a => a.YapilmaTarihi))
+            {
+                <tr>
+                    <td>@asi.AsiAdi</td>
+                    <td>@asi.YapilmaTarihi.ToString("dd.MM.yyyy")</td>
+                    <td>
+                        @if (asi.SonrakiDozTarihi is DateOnly sonraki)
+                        {
+                            <span class="@(sonraki < bugun ? "text-danger fw-semibold" : "")">@sonraki.ToString("dd.MM.yyyy")</span>
+                        }
+                        else
+                        {
+                            <span class="text-muted">-</span>
+                        }
+                    </td>
+                    <td class="small">@asi.Notlar</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-controller="AsiKaydi" asp-action="Duzenle" asp-route-id="@asi.Id" class="btn btn-sm btn-outline-primary">Düzenle</a>
+                        <form asp-controller="AsiKaydi" asp-action="Sil" asp-route-id="@asi.Id" method="post" class="d-inline asi-sil-formu">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p class="small text-muted">Kırmızı tarih: sonraki dozun zamanı geçmiş.</p>
+}
+
+@section Scripts {
+    <script>
+        // Silmeden önce onay iste
+        $(function () {
+            $('.asi-sil-formu').on('submit', function () {
+                return confirm('Bu aşı kaydı silinsin mi?');
+            });
+        });
+    </script>
+}
