@@ -38,7 +38,9 @@
         <ul class="list-group mb-3">
             @foreach (var veteriner in Model.Veterinerler.OrderBy(v => v.Ad))
             {
-                <li class="list-group-item">@veteriner.TamAd</li>
+                <li class="list-group-item">
+                    <a asp-controller="Veteriner" asp-action="Detay" asp-route-id="@veteriner.Id">@veteriner.TamAd</a>
+                </li>
             }
             @if (!Model.Veterinerler.Any())
             {
@@ -51,4 +53,5 @@
 <a asp-action="Duzenle" asp-route-id="@Model.Id" class="btn btn-primary">Düzenle</a>
 <a asp-controller="Hizmet" asp-action="Index" asp-route-klinikId="@Model.Id" class="btn btn-outline-success">Hizmetleri yönet</a>
 <a asp-controller="Hizmet" asp-action="Ekle" asp-route-klinikId="@Model.Id" class="btn btn-outline-success">+ Bu kliniğe hizmet ekle</a>
+<a asp-controller="Veteriner" asp-action="Ekle" asp-route-klinikId="@Model.Id" class="btn btn-outline-info">+ Bu kliniğe veteriner ekle</a>
 <a asp-action="Index" class="btn btn-link">Listeye dön</a>

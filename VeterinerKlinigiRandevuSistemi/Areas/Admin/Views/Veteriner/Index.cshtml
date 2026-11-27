@@ -1,0 +1,75 @@
+﻿@model List<Veteriner>
+@{
+    ViewData["Title"] = "Veterinerler";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Veterinerler</h1>
+    <a asp-action="Ekle" class="btn btn-success">+ Yeni Veteriner</a>
+</div>
+
+<form asp-action="Index" method="get" class="row g-2 align-items-center mb-3">
+    <div class="col-auto">
+        <label for="klinikFiltre" class="col-form-label">Klinik:</label>
+    </div>
+    <div class="col-auto">
+        <select id="klinikFiltre" name="klinikId" class="form-select" asp-items="(SelectList)ViewBag.Klinikler">
+            <option value="">Tüm klinikler</option>
+        </select>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-outline-secondary">Filtrele</button>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Gösterilecek veteriner yok.</div>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Veteriner</th>
+                <th>Klinik</th>
+                <th>Uzmanlık Alanları</th>
+                <th>Giriş E-postası</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var veteriner in Model)
+            {
+                <tr>
+                    <td>@veteriner.TamAd</td>
+                    <td>@veteriner.Klinik?.Ad</td>
+                    <td>
+                        @foreach (var uzmanlik in veteriner.UzmanlikAlanlari.OrderBy(u => u.Ad))
+                        {
+                            <span class="badge text-bg-secondary me-1">@uzmanlik.Ad</span>
+                        }
+                    </td>
+                    <td>@(veteriner.Kullanici?.Email ?? "-")</td>
+                    <td class="text-end">
+                        <a asp-action="Detay" asp-route-id="@veteriner.Id" class="btn btn-sm btn-outline-secondary">Detay</a>
+                        <a asp-action="Duzenle" asp-route-id="@veteriner.Id" class="btn btn-sm btn-outline-primary">Düzenle</a>
+                        <a asp-action="Sil" asp-route-id="@veteriner.Id" class="btn btn-sm btn-outline-danger">Sil</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-controller="Panel" asp-action="Index">&larr; Panele dön</a>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('#klinikFiltre').on('change', function () {
+                $(this).closest('form').trigger('submit');
+            });
+        });
+    </script>
+}

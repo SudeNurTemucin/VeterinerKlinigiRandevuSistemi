@@ -1,0 +1,81 @@
+﻿@model VeterinerFormViewModel
+
+<div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="Ad" class="form-label"></label>
+        <input asp-for="Ad" class="form-control" />
+        <span asp-validation-for="Ad" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Soyad" class="form-label"></label>
+        <input asp-for="Soyad" class="form-control" />
+        <span asp-validation-for="Soyad" class="text-danger"></span>
+    </div>
+</div>
+
+<div class="mb-3">
+    <label asp-for="KlinikId" class="form-label"></label>
+    <select asp-for="KlinikId" asp-items="Model.Klinikler" class="form-select">
+        <option value="">-- Klinik seçiniz --</option>
+    </select>
+    <span asp-validation-for="KlinikId" class="text-danger"></span>
+</div>
+
+@if (Model.YeniKayit)
+{
+    @* Hesap bilgileri sadece eklemede sorulmalı *@
+    <fieldset class="border rounded p-3 mb-3">
+        <legend class="fs-6 w-auto px-2 mb-0">Giriş hesabı</legend>
+        <div class="row">
+            <div class="col-md-6 mb-2">
+                <label asp-for="Eposta" class="form-label"></label>
+                <input asp-for="Eposta" class="form-control" />
+                <span asp-validation-for="Eposta" class="text-danger"></span>
+            </div>
+            <div class="col-md-6 mb-2">
+                <label asp-for="Sifre" class="form-label"></label>
+                <input asp-for="Sifre" class="form-control" />
+                <span asp-validation-for="Sifre" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-text">Veteriner bu bilgilerle giriş yapıp kendi randevularını görecek.</div>
+    </fieldset>
+}
+else
+{
+    <div class="mb-3">
+        <label class="form-label">Giriş E-postası</label>
+        <input class="form-control" value="@Model.Eposta" disabled />
+        <div class="form-text">E-posta ve şifre bu ekrandan değiştirilmez.</div>
+    </div>
+}
+
+<div class="mb-3">
+    <label class="form-label d-block">Uzmanlık Alanları</label>
+    @foreach (var uzmanlik in Model.Uzmanliklar)
+    {
+        <div class="form-check form-check-inline">
+            <input class="form-check-input" type="checkbox" id="uzm-@uzmanlik.Id"
+                   name="SeciliUzmanlikIdleri" value="@uzmanlik.Id"
+                   checked="@Model.SeciliUzmanlikIdleri.Contains(uzmanlik.Id)" />
+            <label class="form-check-label" for="uzm-@uzmanlik.Id">@uzmanlik.Ad</label>
+        </div>
+    }
+</div>
+
+<div class="mb-3">
+    <label class="form-label d-block">Verdiği Hizmetler</label>
+    @foreach (var hizmet in Model.Hizmetler)
+    {
+        @* data-klinik-id: jQuery bu değere bakarak sadece seçili kliniğin hizmetlerini gösterir *@
+        <div class="form-check hizmet-secenegi" data-klinik-id="@hizmet.KlinikId">
+            <input class="form-check-input" type="checkbox" id="hiz-@hizmet.Id"
+                   name="SeciliHizmetIdleri" value="@hizmet.Id"
+                   checked="@Model.SeciliHizmetIdleri.Contains(hizmet.Id)" />
+            <label class="form-check-label" for="hiz-@hizmet.Id">@hizmet.Ad</label>
+        </div>
+    }
+    <div id="hizmetYok" class="form-text">Önce bir klinik seçin. Seçili klinikte hizmet yoksa Hizmet Yönetimi'nden ekleyebilirsiniz.</div>
+</div>

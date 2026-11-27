@@ -1,0 +1,21 @@
+﻿@model VeterinerFormViewModel
+@{
+    ViewData["Title"] = "Yeni Veteriner";
+}
+
+<h1 class="h3 mb-4">Yeni Veteriner</h1>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form asp-action="Ekle" method="post">
+            <partial name="_VeterinerForm" model="Model" />
+            <button type="submit" class="btn btn-success">Kaydet</button>
+            <a asp-action="Index" class="btn btn-link">Vazgeç</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/veteriner-form.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,16 @@
+﻿@model Veteriner
+@{
+    ViewData["Title"] = "Veteriner Sil";
+}
+
+<h1 class="h3 mb-3 text-danger">Veteriner Sil</h1>
+
+<div class="alert alert-warning">
+    <strong>@Model.Klinik?.Ad</strong> kliniğindeki <strong>@Model.TamAd</strong> silinecek.
+    Çalışma saatleri ve <strong>@(Model.Kullanici?.Email ?? "-")</strong> giriş hesabı da silinir. Bu işlem geri alınamaz.
+</div>
+
+<form asp-action="Sil" asp-route-id="@Model.Id" method="post">
+    <button type="submit" class="btn btn-danger">Evet, sil</button>
+    <a asp-action="Index" class="btn btn-link">Vazgeç</a>
+</form>

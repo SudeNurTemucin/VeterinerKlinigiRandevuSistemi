@@ -1,0 +1,41 @@
+﻿@model List<UzmanlikAlaniListeOgesi>
+@{
+    ViewData["Title"] = "Uzmanlık Alanları";
+}
+
+<h1 class="h3 mb-3">Uzmanlık Alanları</h1>
+
+@*Kısa ekleme formu*@
+<form asp-action="Ekle" method="post" class="row g-2 mb-4">
+    <div class="col-sm-6 col-lg-4">
+        <input name="Ad" class="form-control" maxlength="100" placeholder="Yeni uzmanlık alanı (örn. Nöroloji)" required />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-success">+ Ekle</button>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+        <tr>
+            <th>Uzmanlık Alanı</th>
+            <th>Veteriner Sayısı</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var alan in Model)
+        {
+            <tr>
+                <td>@alan.Ad</td>
+                <td>@alan.VeterinerSayisi</td>
+                <td class="text-end">
+                    <a asp-action="Duzenle" asp-route-id="@alan.Id" class="btn btn-sm btn-outline-primary">Düzenle</a>
+                    <a asp-action="Sil" asp-route-id="@alan.Id" class="btn btn-sm btn-outline-danger">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-controller="Panel" asp-action="Index">&larr; Panele dön</a>

@@ -48,6 +48,19 @@ namespace VeterinerKlinigiRandevuSistemi.Data
 
                 await kullaniciYoneticisi.AddToRoleAsync(admin, Roller.Admin);
             }
+            //Tablo boşsa varsayılan uzmanlık alanları eklenir.
+            if (!await db.UzmanlikAlanlari.AnyAsync())
+            {
+                string[] alanlar =
+                {
+                "Dahiliye", "Cerrahi", "Dermatoloji", "Ortopedi",
+                "Diş Hekimliği", "Göz Hastalıkları", "Kardiyoloji", "Egzotik Hayvanlar"
+            };
+
+                db.UzmanlikAlanlari.AddRange(alanlar.Select(ad => new UzmanlikAlani { Ad = ad }));
+                await db.SaveChangesAsync();
+
+            }
         }
     }
 }

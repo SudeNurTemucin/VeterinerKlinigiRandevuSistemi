@@ -1,0 +1,24 @@
+﻿@model UzmanlikAlaniListeOgesi
+@{
+    ViewData["Title"] = "Uzmanlık Alanı Sil";
+}
+
+<h1 class="h3 mb-3 text-danger">Uzmanlık Alanı Sil</h1>
+
+@if (Model.VeterinerSayisi > 0)
+{
+    <div class="alert alert-danger">
+        <strong>@Model.Ad</strong> alanında @Model.VeterinerSayisi veteriner var. Önce veterinerlerden bu uzmanlığı kaldırmalısınız.
+    </div>
+    <a asp-action="Index" class="btn btn-secondary">Geri dön</a>
+}
+else
+{
+    <div class="alert alert-warning">
+        <strong>@Model.Ad</strong> uzmanlık alanını silmek istediğinize emin misiniz?
+    </div>
+    <form asp-action="Sil" asp-route-id="@Model.Id" method="post">
+        <button type="submit" class="btn btn-danger">Evet, sil</button>
+        <a asp-action="Index" class="btn btn-link">Vazgeç</a>
+    </form>
+}

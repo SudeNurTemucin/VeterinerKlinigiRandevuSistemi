@@ -1,0 +1,22 @@
+﻿@model VeterinerFormViewModel
+@{
+    ViewData["Title"] = "Veteriner Düzenle";
+}
+
+<h1 class="h3 mb-4">Veteriner Düzenle</h1>
+
+<div class="row">
+    <div class="col-lg-8">
+        <form asp-action="Duzenle" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+            <partial name="_VeterinerForm" model="Model" />
+            <button type="submit" class="btn btn-primary">Güncelle</button>
+            <a asp-action="Detay" asp-route-id="@Model.Id" class="btn btn-link">Vazgeç</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/veteriner-form.js" asp-append-version="true"></script>
+}

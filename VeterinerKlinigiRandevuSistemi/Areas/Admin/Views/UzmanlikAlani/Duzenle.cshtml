@@ -1,0 +1,25 @@
+﻿@model UzmanlikAlani
+@{
+    ViewData["Title"] = "Uzmanlık Alanı Düzenle";
+}
+
+<h1 class="h3 mb-4">Uzmanlık Alanı Düzenle</h1>
+
+<div class="row">
+    <div class="col-lg-6">
+        <form asp-action="Duzenle" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+            <div class="mb-3">
+                <label asp-for="Ad" class="form-label"></label>
+                <input asp-for="Ad" class="form-control" />
+                <span asp-validation-for="Ad" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Güncelle</button>
+            <a asp-action="Index" class="btn btn-link">Vazgeç</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

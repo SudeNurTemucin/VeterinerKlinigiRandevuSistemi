@@ -1,0 +1,112 @@
+﻿@model Veteriner
+@{
+    ViewData["Title"] = Model.TamAd;
+    var klinik = Model.Klinik!;
+    // Pazartesi'den Pazar'a, sonra saate göre sırala
+    var calismaSaatleri = Model.MusaitlikSaatleri
+        .OrderBy(m => GunYardimcisi.Sira(m.Gun))
+        .ThenBy(m => m.BaslangicSaati)
+        .ToList();
+}
+
+<h1 class="h3 mb-3">@Model.TamAd</h1>
+
+<dl class="row">
+    <dt class="col-sm-3">Klinik</dt>
+    <dd class="col-sm-9">
+        <a asp-controller="Klinik" asp-action="Detay" asp-route-id="@Model.KlinikId">@klinik.Ad</a>
+        <span class="text-muted">(@klinik.AcilisSaati.ToString("HH:mm") - @klinik.KapanisSaati.ToString("HH:mm"))</span>
+    </dd>
+
+    <dt class="col-sm-3">Giriş E-postası</dt>
+    <dd class="col-sm-9">@(Model.Kullanici?.Email ?? "-")</dd>
+
+    <dt class="col-sm-3">Uzmanlık Alanları</dt>
+    <dd class="col-sm-9">
+        @foreach (var uzmanlik in Model.UzmanlikAlanlari.OrderBy(u => u.Ad))
+        {
+            <span class="badge text-bg-secondary me-1">@uzmanlik.Ad</span>
+        }
+        @if (!Model.UzmanlikAlanlari.Any())
+        {
+            <span class="text-muted">-</span>
+        }
+    </dd>
+
+    <dt class="col-sm-3">Verdiği Hizmetler</dt>
+    <dd class="col-sm-9">
+        @(Model.Hizmetler.Any() ? string.Join(", ", Model.Hizmetler.OrderBy(h => h.Ad).Select(h => h.Ad)) : "-")
+    </dd>
+</dl>
+
+<a asp-action="Duzenle" asp-route-id="@Model.Id" class="btn btn-primary mb-4">Düzenle</a>
+<a asp-action="Index" class="btn btn-link mb-4">Listeye dön</a>
+
+<h2 class="h5">Haftalık Çalışma Saatleri</h2>
+
+<div class="row">
+    <div class="col-lg-6">
+        <table class="table table-sm align-middle">
+            <thead>
+                <tr>
+                    <th>Gün</th>
+                    <th>Saat</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var saat in calismaSaatleri)
+                {
+                    <tr>
+                        <td>@GunYardimcisi.TurkceAd(saat.Gun)</td>
+                        <td>@saat.BaslangicSaati.ToString("HH:mm") - @saat.BitisSaati.ToString("HH:mm")</td>
+                        <td class="text-end">
+                            <form asp-action="MusaitlikSil" asp-route-id="@saat.Id" method="post" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Sil</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (!calismaSaatleri.Any())
+                {
+                    <tr>
+                        <td colspan="3" class="text-muted">Henüz çalışma saati eklenmemiş. Bu veteriner için randevu alınamaz.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="h6 card-title">Çalışma saati ekle</h3>
+                <form asp-action="MusaitlikEkle" method="post">
+                    <input type="hidden" name="VeterinerId" value="@Model.Id" />
+                    <div class="mb-2">
+                        <label for="Gun" class="form-label">Gün</label>
+                        <select id="Gun" name="Gun" class="form-select">
+                            @foreach (var gun in GunYardimcisi.HaftaGunleri)
+                            {
+                                <option value="@((int)gun)">@GunYardimcisi.TurkceAd(gun)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col mb-2">
+                            <label for="BaslangicSaati" class="form-label">Başlangıç</label>
+                            <input type="time" id="BaslangicSaati" name="BaslangicSaati" class="form-control"
+                                   value="@klinik.AcilisSaati.ToString("HH:mm")" required />
+                        </div>
+                        <div class="col mb-2">
+                            <label for="BitisSaati" class="form-label">Bitiş</label>
+                            <input type="time" id="BitisSaati" name="BitisSaati" class="form-control"
+                                   value="@klinik.KapanisSaati.ToString("HH:mm")" required />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success">+ Ekle</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
