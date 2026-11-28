@@ -1,0 +1,84 @@
+@model RandevuAlViewModel
+@{
+    ViewData["Title"] = "Randevu Al";
+    var bugun = DateTime.Today;
+}
+
+<h1 class="h3 mb-4">Randevu Al</h1>
+
+<div class="row">
+    <div class="col-lg-7">
+        @* data-*-url: jQuery'nin çağıracağı json adresleri *@
+        <form asp-action="Al" method="post" id="randevuFormu"
+              data-hizmetler-url="@Url.Action("Hizmetler")"
+              data-veterinerler-url="@Url.Action("Veterinerler")"
+              data-saatler-url="@Url.Action("MusaitSaatler")">
+
+            <div asp-validation-summary="ModelOnly" class="text-danger fw-semibold mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="EvcilHayvanId" class="form-label"></label>
+                <select asp-for="EvcilHayvanId" asp-items="Model.Hayvanlar" class="form-select">
+                    <option value="">-- Evcil hayvan seçin --</option>
+                </select>
+                <span asp-validation-for="EvcilHayvanId" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="KlinikId" class="form-label">1. Klinik</label>
+                    <select asp-for="KlinikId" asp-items="Model.Klinikler" class="form-select">
+                        <option value="">-- Klinik seçin --</option>
+                    </select>
+                    <span asp-validation-for="KlinikId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="HizmetId" class="form-label">2. Hizmet</label>
+                    <select asp-for="HizmetId" class="form-select" data-secili="@Model.HizmetId" disabled>
+                        <option value="">-- Önce klinik seçin --</option>
+                    </select>
+                    <span asp-validation-for="HizmetId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="VeterinerId" class="form-label">3. Veteriner</label>
+                <select asp-for="VeterinerId" class="form-select" data-secili="@Model.VeterinerId" disabled>
+                    <option value="">-- Önce hizmet seçin --</option>
+                </select>
+                <span asp-validation-for="VeterinerId" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Tarih" class="form-label">4. Tarih</label>
+                    <input asp-for="Tarih" type="date" class="form-control"
+                           min="@bugun.ToString("yyyy-MM-dd")" max="@bugun.AddDays(60).ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="Tarih" class="text-danger"></span>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Saat" class="form-label">5. Saat</label>
+                    <select asp-for="Saat" class="form-select" data-secili="@(Model.Saat?.ToString("HH:mm"))" disabled>
+                        <option value="">-- Saat --</option>
+                    </select>
+                    <div id="saatBilgi" class="form-text">Önce veteriner ve tarih seçin.</div>
+                    <span asp-validation-for="Saat" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Aciklama" class="form-label"></label>
+                <textarea asp-for="Aciklama" class="form-control" rows="2"></textarea>
+                <span asp-validation-for="Aciklama" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn btn-success">Randevu Oluştur</button>
+            <a asp-action="Index" class="btn btn-link">Vazgeç</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/randevu-al.js" asp-append-version="true"></script>
+}

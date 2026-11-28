@@ -27,11 +27,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
 
-                        @* Adım 6: Üyeler kendi hayvanlarını görür *@
+                        @*Üyeler kendi hayvanlarını görür *@
                         @if (User.IsInRole(Roller.Uye))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="EvcilHayvan" asp-action="Index">Evcil Hayvanlarım</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Randevu" asp-action="Index">Randevularım</a>
                             </li>
                         }
 

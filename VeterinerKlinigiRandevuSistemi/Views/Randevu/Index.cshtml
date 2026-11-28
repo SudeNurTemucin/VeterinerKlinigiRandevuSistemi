@@ -1,0 +1,78 @@
+@using VeterinerKlinigiRandevuSistemi.Services
+@using VeterinerKlinigiRandevuSistemi.Yardimcilar
+@model List<RandevuOzeti>
+@{
+    ViewData["Title"] = "Randevularım";
+    var simdi = DateTime.Now;
+    var yaklasanlar = Model.Where(r => r.Baslangic >= simdi).OrderBy(r => r.Baslangic).ToList();
+    var gecmisler = Model.Where(r => r.Baslangic < simdi).ToList();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Randevularım</h1>
+    <a asp-action="Al" class="btn btn-success">+ Randevu Al</a>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Henüz randevunuz yok.</div>
+}
+
+@foreach (var (baslik, liste) in new[] { ("Yaklaşan Randevular", yaklasanlar), ("Geçmiş Randevular", gecmisler) })
+{
+    if (!liste.Any())
+    {
+        continue;
+    }
+
+    <h2 class="h5 mt-4">@baslik (@liste.Count)</h2>
+    <div class="table-responsive">
+        <table class="table align-middle">
+            <thead>
+                <tr>
+                    <th>Tarih</th>
+                    <th>Hayvan</th>
+                    <th>Hizmet</th>
+                    <th>Veteriner</th>
+                    <th>Ücret</th>
+                    <th>Durum</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in liste)
+                {
+                    <tr>
+                        <td class="text-nowrap">
+                            @r.Baslangic.ToString("dd.MM.yyyy ddd")<br />
+                            <span class="text-muted small">@r.Baslangic.ToString("HH:mm") - @r.Bitis.ToString("HH:mm")</span>
+                        </td>
+                        <td>@r.HayvanAdi</td>
+                        <td>@r.HizmetAdi</td>
+                        <td>@r.VeterinerAdi<br /><span class="text-muted small">@r.KlinikAdi</span></td>
+                        <td class="text-nowrap">@r.Ucret.ToString("C")</td>
+                        <td><span class="badge @DurumYardimcisi.RozetSinifi(r.Durum)">@DurumYardimcisi.Metin(r.Durum)</span></td>
+                        <td class="text-end">
+                            @if (r.IptalEdilebilir)
+                            {
+                                <form asp-action="Iptal" asp-route-id="@r.Id" method="post" class="d-inline randevu-iptal-formu">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">İptal Et</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('.randevu-iptal-formu').on('submit', function () {
+                return confirm('Bu randevu iptal edilsin mi?');
+            });
+        });
+    </script>
+}

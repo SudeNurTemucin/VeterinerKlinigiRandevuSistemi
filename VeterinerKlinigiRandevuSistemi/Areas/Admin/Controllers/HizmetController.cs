@@ -85,7 +85,6 @@ public class HizmetController : Controller
         TempData["Basari"] = $"\"{hizmet.Ad}\" hizmeti eklendi.";
         return RedirectToAction(nameof(Index));
     }
-
  
     public async Task<IActionResult> Duzenle(int id)
     {
